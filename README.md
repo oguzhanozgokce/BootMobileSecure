@@ -1,5 +1,8 @@
 # 🛡️ BootMobileSecure
 
+[![EN](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
+[![TR](https://img.shields.io/badge/lang-tr-red.svg)](README_TR.md)
+
 **A modern, secure Android application built with Spring Boot backend integration**
 
 ![Android](https://img.shields.io/badge/Android-API%2027+-green.svg)
@@ -14,6 +17,22 @@
 BootMobileSecure is a production-ready Android application showcasing modern mobile development
 practices with enterprise-grade security features. Built with **Kotlin**, **Jetpack Compose**, and *
 *Clean Architecture**, it provides seamless integration with Spring Boot backends.
+
+### 🔗 Backend Integration
+
+This Android application is designed to work with a custom **Spring Boot backend** that I developed.
+The backend handles:
+
+- 🔐 **User Authentication & Authorization** with JWT tokens
+- 📊 **Database Operations** with JPA/Hibernate
+- 🛡️ **Security Configuration** with Spring Security
+- 🔄 **RESTful APIs** for all client operations
+- 📝 **User Registration & Login** endpoints
+
+**🌐 Backend Repository**: [SpringBootProject](https://github.com/oguzhanozgokce/SpringBootProject)
+
+*Check out the backend project to see the complete server-side implementation with database models,
+security configurations, and API endpoints.*
 
 ### ✨ Key Features
 
@@ -190,13 +209,16 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <div align="center">
 
 ### 🔐 Login Screen
-<img src="screenshots/login.png" width="250" alt="Login Screen"/>
+
+<img src="screenshot/Login.png" width="250" alt="Login Screen"/>
 
 ### 📝 Register Screen
-<img src="screenshots/register.png" width="250" alt="Register Screen"/>
+
+<img src="screenshot/Register.png" width="250" alt="Register Screen"/>
 
 ### 🏠 Home Screen
-<img src="screenshots/home.png" width="250" alt="Home Screen"/>
+
+<img src="screenshot/Home.png" width="250" alt="Home Screen"/>
 
 </div>
 
