@@ -1,5 +1,6 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.home
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,12 +41,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oguzhanozgokce.bootmobilesecure.common.collectWithLifecycle
+import com.oguzhanozgokce.bootmobilesecure.domain.model.User
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMBaseScreen
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.QuickAction
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiAction
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiEffect
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiState
-import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.User
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -51,12 +54,28 @@ fun HomeScreen(
     uiState: UiState,
     uiEffect: Flow<UiEffect>,
     onAction: (UiAction) -> Unit,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
 ) {
-    uiEffect.collectWithLifecycle {}
+    val context = LocalContext.current
 
     BMBaseScreen(
         isLoading = uiState.isLoading,
         uiEffect = uiEffect,
+        collectEffect = { effect ->
+            when (effect) {
+                is UiEffect.NavigateToLogin -> onNavigateToLogin()
+                is UiEffect.NavigateToProfile -> onAction(UiAction.ProfileClicked)
+                is UiEffect.NavigateToSettings -> onAction(UiAction.SettingsClicked)
+                is UiEffect.ShowError -> Toast.makeText(
+                    context,
+                    effect.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+                is UiEffect.ShowSuccess -> {}
+            }
+        },
         containerColor = Color(0xFFF5F5F5)
     ) {
         HomeContent(
@@ -275,7 +294,7 @@ fun UserInfoCard(
                 // Member Since
                 UserInfoRow(
                     label = "Member Since",
-                    value = user.joinDate,
+                    value = "10/07/2025",
                     icon = "📅"
                 )
 
@@ -284,7 +303,7 @@ fun UserInfoCard(
                 // Last Login
                 UserInfoRow(
                     label = "Last Login",
-                    value = user.lastLogin,
+                    value = "10/07/2025 14:30",
                     icon = "🕐"
                 )
             } else {

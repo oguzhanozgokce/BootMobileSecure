@@ -2,28 +2,37 @@ package com.oguzhanozgokce.bootmobilesecure.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oguzhanozgokce.bootmobilesecure.data.network.TokenManager
+import com.oguzhanozgokce.bootmobilesecure.data.network.getUserMessage
 import com.oguzhanozgokce.bootmobilesecure.delegation.MVI
 import com.oguzhanozgokce.bootmobilesecure.delegation.mvi
+import com.oguzhanozgokce.bootmobilesecure.domain.repository.MainRepository
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.QuickAction
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiAction
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiEffect
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiState
-import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.User
-import kotlinx.coroutines.delay
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiState()) {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val mainRepository: MainRepository,
+    private val tokenManager: TokenManager
+) : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiState()) {
 
     init {
-        loadUserData()
         updateGreeting()
         loadQuickActions()
+        loadUserData()
     }
 
     override fun onAction(uiAction: UiAction) {
         viewModelScope.launch {
             when (uiAction) {
+                UiAction.LoadUserData -> loadUserData()
+                UiAction.RefreshUserData -> loadUserData(isRefresh = true)
                 UiAction.LogoutClicked -> handleLogout()
                 UiAction.ProfileClicked -> emitUiEffect(UiEffect.NavigateToProfile)
                 UiAction.SettingsClicked -> emitUiEffect(UiEffect.NavigateToSettings)
@@ -32,37 +41,25 @@ class HomeViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiSta
         }
     }
 
-    private fun loadUserData() {
-        viewModelScope.launch {
-            updateUiState { copy(isLoading = true) }
+    private  fun loadUserData(isRefresh: Boolean = false) = viewModelScope.launch {
+        updateUiState { copy(isLoading = true) }
 
-            try {
-                // Simulate API call
-                delay(1000)
-
-                // Mock user data
-                val mockUser = User(
-                    id = "1",
-                    username = "oguzhan33",
-                    email = "oguzhan33@gmail.com",
-                    firstName = "Oğuzhan",
-                    lastName = "Özgökçe",
-                    avatar = null,
-                    joinDate = "January 2024",
-                    lastLogin = "2 minutes ago"
-                )
-
-                updateUiState {
-                    copy(
-                        user = mockUser,
-                        isLoading = false
-                    )
+        mainRepository.getCurrentUser()
+            .onSuccess { user ->
+                updateUiState { copy(user = user, isLoading = false) }
+                if (isRefresh) {
+                    emitUiEffect(UiEffect.ShowSuccess("Profile refreshed successfully"))
                 }
-            } catch (e: Exception) {
-                updateUiState { copy(isLoading = false) }
-                emitUiEffect(UiEffect.ShowError("Failed to load user data"))
             }
-        }
+            .onFailure { exception ->
+                updateUiState { copy(isLoading = false) }
+                val errorMessage = (exception as? Exception ?: Exception(exception.message)).getUserMessage()
+                emitUiEffect(UiEffect.ShowError(errorMessage))
+
+                if (!tokenManager.isLoggedIn() || errorMessage.contains("401")) {
+                    emitUiEffect(UiEffect.NavigateToLogin)
+                }
+            }
     }
 
     private fun updateGreeting() {
@@ -75,13 +72,11 @@ class HomeViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiSta
             else -> "Good Evening"
         }
 
-        updateUiState {
-            copy(greeting = greeting)
-        }
+        updateUiState { copy(greeting = greeting) }
     }
 
     private fun loadQuickActions() {
-        val mockQuickActions = listOf(
+        val quickActions = listOf(
             QuickAction(
                 id = "profile",
                 title = "Edit Profile",
@@ -104,6 +99,13 @@ class HomeViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiSta
                 action = "security"
             ),
             QuickAction(
+                id = "refresh",
+                title = "Refresh Profile",
+                description = "Reload your latest information",
+                icon = "🔄",
+                action = "refresh"
+            ),
+            QuickAction(
                 id = "help",
                 title = "Help & Support",
                 description = "Get help and contact support",
@@ -112,16 +114,16 @@ class HomeViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiSta
             )
         )
 
-        updateUiState { copy(quickActions = mockQuickActions) }
+        updateUiState { copy(quickActions = quickActions) }
     }
 
     private suspend fun handleLogout() {
         updateUiState { copy(isLoading = true) }
 
         try {
-            // Simulate logout API call
-            delay(1000)
+            tokenManager.clearToken()
             emitUiEffect(UiEffect.NavigateToLogin)
+            emitUiEffect(UiEffect.ShowSuccess("Logged out successfully"))
         } catch (e: Exception) {
             emitUiEffect(UiEffect.ShowError("Logout failed"))
         } finally {
@@ -134,6 +136,7 @@ class HomeViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiSta
             "profile" -> emitUiEffect(UiEffect.NavigateToProfile)
             "settings" -> emitUiEffect(UiEffect.NavigateToSettings)
             "security" -> emitUiEffect(UiEffect.ShowSuccess("Security settings opened"))
+            "refresh" -> onAction(UiAction.RefreshUserData)
             "help" -> emitUiEffect(UiEffect.ShowSuccess("Help center opened"))
             else -> emitUiEffect(UiEffect.ShowError("Unknown action"))
         }

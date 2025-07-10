@@ -1,8 +1,8 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.home
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.oguzhanozgokce.bootmobilesecure.domain.model.User
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.QuickAction
-import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.User
 
 class HomeScreenPreviewProvider : PreviewParameterProvider<HomeContract.UiState> {
     override val values: Sequence<HomeContract.UiState>
@@ -10,14 +10,13 @@ class HomeScreenPreviewProvider : PreviewParameterProvider<HomeContract.UiState>
             HomeContract.UiState(
                 isLoading = false,
                 user = User(
-                    id = "1",
+                    id = 1L,
                     username = "oguzhan33",
                     email = "oguzhan33@gmail.com",
                     firstName = "Oğuzhan",
                     lastName = "Özgökçe",
-                    avatar = null,
-                    joinDate = "January 2024",
-                    lastLogin = "2 minutes ago"
+                    role = "User",
+                    fullName = "Oğuzhan Özgökçe"
                 ),
                 greeting = "Good Morning",
                 quickActions = listOf(
