@@ -121,56 +121,6 @@ tokenManager.saveTokensWithKeystore(
 
 ---
 
-## 🎯 Usage Examples
-
-### 🔐 Authentication Flow
-
-```kotlin
-class LoginViewModel @Inject constructor(
-    private val repository: MainRepository
-) : ViewModel() {
-    
-    fun login(username: String, password: String) {
-        viewModelScope.launch {
-            val request = repository.createLoginRequest(username, password)
-            
-            repository.login(request).fold(
-                onSuccess = { authResponse ->
-                    emitUiEffect(UiEffect.NavigateToHome)
-                },
-                onFailure = { exception ->
-                    val message = exception.getUserMessage()
-                    updateUiState { copy(errorMessage = message) }
-                }
-            )
-        }
-    }
-}
-```
-
-### 🏠 Home Screen Implementation
-
-```kotlin
-@Composable
-fun HomeScreen(
-    uiState: UiState,
-    onAction: (UiAction) -> Unit
-) {
-    BMBaseScreen(
-        isLoading = uiState.isLoading,
-        containerColor = Color(0xFFF5F5F5)
-    ) {
-        LazyColumn {
-            item { WelcomeCard(user = uiState.user) }
-            item { UserInfoCard(user = uiState.user) }
-            item { QuickActionsSection(actions = uiState.quickActions) }
-        }
-    }
-}
-```
-
----
-
 ## 🚀 Deployment
 
 ### 📱 Release Build
@@ -243,7 +193,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <img src="screenshots/login.png" width="250" alt="Login Screen"/>
 
 ### 📝 Register Screen
-
 <img src="screenshots/register.png" width="250" alt="Register Screen"/>
 
 ### 🏠 Home Screen
@@ -252,8 +201,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 </div>
 
 ---
-
-
 
 <div align="center">
 
