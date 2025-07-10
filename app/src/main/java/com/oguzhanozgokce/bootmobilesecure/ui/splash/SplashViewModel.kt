@@ -1,21 +1,45 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.splash
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.oguzhanozgokce.bootmobilesecure.data.network.TokenManager
 import com.oguzhanozgokce.bootmobilesecure.delegation.MVI
 import com.oguzhanozgokce.bootmobilesecure.delegation.mvi
 import com.oguzhanozgokce.bootmobilesecure.ui.splash.SplashContract.UiAction
 import com.oguzhanozgokce.bootmobilesecure.ui.splash.SplashContract.UiEffect
 import com.oguzhanozgokce.bootmobilesecure.ui.splash.SplashContract.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SplashViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiState()) {
+@HiltViewModel
+class SplashViewModel @Inject constructor(
+    private val tokenManager: TokenManager
+) : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiState()) {
 
-    override fun onAction(uiAction: UiAction) {
-
+    init {
+        checkAuthenticationStatus()
     }
 
-    // Update state example: updateUiState { UiState(isLoading = false) }
-    // or // updateUiState { copy(isLoading = false) }
+    private fun checkAuthenticationStatus() {
+        viewModelScope.launch {
+            updateUiState { copy(isLoading = true) }
 
-    // Update effect example: emitUiEffect(UiEffect.ShowError(it.message.orEmpty()))
-    // Use within a coroutine scope, e.g., viewModelScope.launch { ... }
+            try {
+                delay(1000)
+                val isLoggedIn = tokenManager.isLoggedIn()
+                updateUiState { copy(isLoading = false) }
+                if (isLoggedIn) {
+                    emitUiEffect(UiEffect.NavigateToHome)
+                } else {
+                    emitUiEffect(UiEffect.NavigateToLogin)
+                }
+
+            } catch (e: Exception) {
+                updateUiState { copy(isLoading = false) }
+                emitUiEffect(UiEffect.ShowError("Authentication check failed"))
+            }
+        }
+    }
 }
