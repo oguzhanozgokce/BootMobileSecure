@@ -110,7 +110,7 @@ tokenManager.saveTokensWithKeystore(
 3. **Configure Backend URL**
    ```kotlin
    // In NetworkModule.kt
-   private const val BASE_URL = "http://your-backend-url:8080/api/"
+   BASE_URL = "http://your-backend-url:8080/api/"
    ```
 
 4. **Run the application**
