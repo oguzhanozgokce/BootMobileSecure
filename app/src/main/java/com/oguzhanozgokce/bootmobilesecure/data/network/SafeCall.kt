@@ -116,3 +116,11 @@ fun Exception.getUserMessage(): String = when (this) {
     else -> "Bir hata oluştu, tekrar deneyin"
 }
 
+fun Throwable.getUserMessage(): String = when (this) {
+    is AuthException -> "Oturum süreniz doldu, tekrar giriş yapın"
+    is ConflictException -> "Bu bilgiler zaten kullanımda"
+    is ServerException -> "Sunucu geçici olarak erişilebilir değil"
+    is NetworkException -> "İnternet bağlantınızı kontrol edin"
+    else -> "Bir hata oluştu, tekrar deneyin"
+}
+

@@ -3,6 +3,7 @@ package com.oguzhanozgokce.bootmobilesecure.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -32,37 +33,69 @@ fun NavigationGraph(
         startDestination = startDestination,
     ) {
         composable<Splash> {
-            val viewModel = viewModel<SplashViewModel>(it)
+            val viewModel: SplashViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val uiEffect = viewModel.uiEffect
             SplashScreen(
                 uiState = uiState,
                 uiEffect = uiEffect,
-                onAction = viewModel::onAction
+                onAction = viewModel::onAction,
+                onNavigateToLogin = {
+                    navController.navigate(Login) {
+                        popUpTo(Splash) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToHome = {
+                    navController.navigate(Home) {
+                        popUpTo(Splash) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
         composable<Login> {
-            val viewModel = viewModel<LoginViewModel>(it)
+            val viewModel: LoginViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val uiEffect = viewModel.uiEffect
             LoginScreen(
                 uiState = uiState,
                 uiEffect = uiEffect,
-                onAction = viewModel::onAction
+                onAction = viewModel::onAction,
+                onNavigateToHome = {
+                    navController.navigate(Home) {
+                        popUpTo(Login) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToForgotPassword = { navController.navigate(Password) },
+                onNavigateToRegister = { navController.navigate(Register) }
             )
         }
         composable<Register> {
-            val viewModel = viewModel<RegisterViewModel>(it)
+            val viewModel : RegisterViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val uiEffect = viewModel.uiEffect
             RegisterScreen(
                 uiState = uiState,
                 uiEffect = uiEffect,
-                onAction = viewModel::onAction
+                onAction = viewModel::onAction,
+                onNavigateToLogin = { navController.navigate(Login) },
+                onNavigateToHome = {
+                    navController.navigate(Home) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateBack = { navController.navigateUp() }
             )
         }
         composable<Password> {
-            val viewModel = viewModel<PasswordViewModel>(it)
+            val viewModel: PasswordViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val uiEffect = viewModel.uiEffect
             PasswordScreen(
@@ -72,13 +105,20 @@ fun NavigationGraph(
             )
         }
         composable<Home> {
-            val viewModel = viewModel<HomeViewModel>(it)
+            val viewModel: HomeViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val uiEffect = viewModel.uiEffect
             HomeScreen(
                 uiState = uiState,
                 uiEffect = uiEffect,
-                onAction = viewModel::onAction
+                onAction = viewModel::onAction,
+                onNavigateToLogin = {
+                    navController.navigate(Login) {
+                        popUpTo(Home) {
+                            inclusive = true
+                        }
+                    }
+                },
             )
         }
     }
