@@ -1,6 +1,7 @@
 package com.oguzhanozgokce.bootmobilesecure.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.oguzhanozgokce.bootmobilesecure.domain.model.User
 
 // Base Response Wrapper
 data class ApiResponse<T>(
@@ -30,10 +31,23 @@ data class AuthResponse(
 )
 
 data class UserResponse(
-    @SerializedName("id") val id: Long,
-    @SerializedName("username") val username: String,
-    @SerializedName("email") val email: String,
-    @SerializedName("firstName") val firstName: String,
-    @SerializedName("lastName") val lastName: String,
-    @SerializedName("role") val role: String
+    @SerializedName("id") val id: Long ? = null,
+    @SerializedName("username") val username: String ? = null,
+    @SerializedName("email") val email: String ? = null,
+    @SerializedName("firstName") val firstName: String ? = null,
+    @SerializedName("lastName") val lastName: String ? = null,
+    @SerializedName("role") val role: String ? = null,
 )
+
+// Mapper function to convert UserResponse to UI User model
+fun UserResponse.toUiUser(): User {
+    return User(
+        id = this.id ?: 0L,
+        username = this.username.orEmpty(),
+        email = this.email.orEmpty(),
+        firstName = this.firstName.orEmpty(),
+        lastName = this.lastName.orEmpty(),
+        role = this.role.orEmpty(),
+        fullName = "${this.firstName.orEmpty()} ${this.lastName.orEmpty()}".trim()
+    )
+}

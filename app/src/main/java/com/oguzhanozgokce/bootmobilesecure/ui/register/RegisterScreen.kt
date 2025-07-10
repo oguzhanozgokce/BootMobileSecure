@@ -1,5 +1,6 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.register
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -26,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.oguzhanozgokce.bootmobilesecure.common.collectWithLifecycle
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMBaseScreen
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMFacebookButton
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMFormCard
@@ -51,18 +53,31 @@ fun RegisterScreen(
     uiState: UiState,
     uiEffect: Flow<UiEffect>,
     onAction: (UiAction) -> Unit,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToHome: () -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
-    uiEffect.collectWithLifecycle {}
-
+    val context = LocalContext.current
     BMBaseScreen(
         isLoading = uiState.isLoading,
         uiEffect = uiEffect,
+        collectEffect = { effect ->
+            when (effect) {
+                UiEffect.NavigateToLogin -> onNavigateToLogin()
+                UiEffect.NavigateBack -> onNavigateBack()
+                UiEffect.NavigateToHome -> onNavigateToHome()
+                is UiEffect.ShowError -> Toast.makeText(
+                    context,
+                    effect.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        },
         containerColor = Color(0xFFE8F5E8)
-    ) { paddingValues ->
+    ) {
         RegisterContent(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+                .fillMaxSize(),
             uiState = uiState,
             onAction = onAction,
         )

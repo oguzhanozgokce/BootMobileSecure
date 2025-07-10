@@ -6,8 +6,13 @@ import com.oguzhanozgokce.bootmobilesecure.delegation.mvi
 import com.oguzhanozgokce.bootmobilesecure.ui.password.PasswordContract.UiAction
 import com.oguzhanozgokce.bootmobilesecure.ui.password.PasswordContract.UiEffect
 import com.oguzhanozgokce.bootmobilesecure.ui.password.PasswordContract.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class PasswordViewModel : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiState()) {
+@HiltViewModel
+class PasswordViewModel @Inject constructor(
+
+) : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiState()) {
 
     override fun onAction(uiAction: UiAction) {
 
