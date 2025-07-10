@@ -1,4 +1,4 @@
-# 🛡️ BootMobileSecure
+# BootMobileSecure
 
 [![EN](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
 [![TR](https://img.shields.io/badge/lang-tr-red.svg)](README_TR.md)
@@ -12,59 +12,59 @@
 
 ---
 
-## 📱 Genel Bakış
+## Genel Bakış
 
 BootMobileSecure, kurumsal düzeyde güvenlik özellikleri ile modern mobil geliştirme uygulamalarını
 sergileyen, üretime hazır bir Android uygulamasıdır. **Kotlin**, **Jetpack Compose** ve **Clean
 Architecture** ile geliştirilmiş olup, Spring Boot backend'leri ile sorunsuz entegrasyon sağlar.
 
-### 🔗 Backend Entegrasyonu
+### Backend Entegrasyonu
 
 Bu Android uygulaması, geliştirdiğim özel **Spring Boot backend** ile çalışmak üzere tasarlanmıştır.
 Backend şunları yönetir:
 
-- 🔐 **Kullanıcı Kimlik Doğrulama ve Yetkilendirme** JWT token'ları ile
-- 📊 **Veritabanı İşlemleri** JPA/Hibernate ile
-- 🛡️ **Güvenlik Yapılandırması** Spring Security ile
-- 🔄 **RESTful API'ler** tüm istemci işlemleri için
-- 📝 **Kullanıcı Kaydı ve Giriş** endpoint'leri
+- **Kullanıcı Kimlik Doğrulama ve Yetkilendirme** JWT token'ları ile
+- **Veritabanı İşlemleri** JPA/Hibernate ile
+- **Güvenlik Yapılandırması** Spring Security ile
+- **RESTful API'ler** tüm istemci işlemleri için
+- **Kullanıcı Kaydı ve Giriş** endpoint'leri
 
-**🌐 Backend Repository**: [SpringBootProject](https://github.com/oguzhanozgokce/SpringBootProject)
+**Backend Repository**: [SpringBootProject](https://github.com/oguzhanozgokce/SpringBootProject)
 
 *Veritabanı modelleri, güvenlik yapılandırmaları ve API endpoint'leri ile tam sunucu tarafı
 implementasyonu için backend projeyi inceleyin.*
 
-### ✨ Temel Özellikler
+### Temel Özellikler
 
-- 🔐 **Kurumsal Güvenlik**: Android Keystore ile donanım destekli şifreleme
-- 🎨 **Modern Arayüz**: Jetpack Compose ile güzel Material Design 3
-- 🏗️ **Temiz Mimari**: Dependency Injection ile MVVM + Repository pattern
-- 🌐 **Ağ Güvenliği**: Profesyonel hata yönetimi ve yeniden deneme mekanizmaları
-- 🔄 **Otomatik Token Yönetimi**: Otomatik yenileme ile güvenli JWT işleme
-- 🎯 **Tip Güvenliği**: Result-based hata yönetimi ile tam Kotlin coroutines
+- **Kurumsal Güvenlik**: Android Keystore ile donanım destekli şifreleme
+- **Modern Arayüz**: Jetpack Compose ile güzel Material Design 3
+- **Temiz Mimari**: Dependency Injection ile MVVM + Repository pattern
+- **Ağ Güvenliği**: Profesyonel hata yönetimi ve yeniden deneme mekanizmaları
+- **Otomatik Token Yönetimi**: Otomatik yenileme ile güvenli JWT işleme
+- **Tip Güvenliği**: Result-based hata yönetimi ile tam Kotlin coroutines
 
 ---
 
-## 🏗️ Mimari
+## Mimari
 
 ```
-📱 BootMobileSecure
-├── 🎨 UI Katmanı (Compose)
+BootMobileSecure
+├── UI Katmanı (Compose)
 │   ├── Ekranlar (Login, Register, Home)
 │   ├── Bileşenler (Yeniden Kullanılabilir UI)
 │   └── ViewModels (MVI Pattern)
-├── 🔄 Domain Katmanı
+├── Domain Katmanı
 │   ├── Repositories (Arayüzler)
 │   └── Use Cases
-├── 🗄️ Data Katmanı
+├── Data Katmanı
 │   ├── Repository Implementasyonları
 │   ├── Network (Retrofit + OkHttp)
 │   ├── Security (TokenManager)
 │   └── Models (DTOs)
-└── 🔧 DI (Hilt)
+└── DI (Hilt)
 ```
 
-### 🎯 Tasarım Desenleri
+### Tasarım Desenleri
 
 - **MVI (Model-View-Intent)**: Tek yönlü veri akışı
 - **Repository Pattern**: Temiz veri katmanı soyutlaması
@@ -73,9 +73,9 @@ implementasyonu için backend projeyi inceleyin.*
 
 ---
 
-## 🔐 Güvenlik Özellikleri
+## Güvenlik Özellikleri
 
-### 🛡️ Çok Katmanlı Güvenlik
+### Çok Katmanlı Güvenlik
 
 1. **Donanım Güvenlik Modülü (HSM)**
     - StrongBox desteği ile Android Keystore
@@ -103,7 +103,7 @@ tokenManager.saveTokensWithKeystore(
 
 ---
 
-## 🚀 Hızlı Başlangıç
+## Hızlı Başlangıç
 
 ### Ön Koşullar
 
@@ -112,7 +112,7 @@ tokenManager.saveTokensWithKeystore(
 - **Target SDK**: API 35 (Android 15)
 - **Kotlin**: 2.0.0+
 
-### 🔧 Kurulum
+### Kurulum
 
 1. **Repository'yi klonlayın**
    ```bash
@@ -172,7 +172,7 @@ tokenManager.saveTokensWithKeystore(
 4. **Push** edin branch'e (`git push origin feature/HarikaBirOzellik`)
 5. **Açın** bir Pull Request
 
-### 📋 Kod Standartları
+### Kod Standartları
 
 - **Kotlin kodlama kuralları**
 - **Material Design 3 kılavuzları**
@@ -181,22 +181,21 @@ tokenManager.saveTokensWithKeystore(
 
 ---
 
-## 📄 Lisans
+## Lisans
 
 Bu proje **MIT Lisansı** altında lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
 ---
 
-## 👨‍💻 Yazar
+## Yazar
 
 **Oğuzhan Özgökçe**
-
 - GitHub: [@oguzhanozgokce](https://github.com/oguzhanozgokce)
 - Email: oguzhan33@gmail.com
 
 ---
 
-## 🙏 Teşekkürler
+## Teşekkürler
 
 - **Spring Boot Ekibi** mükemmel backend framework için
 - **Android Ekibi** Jetpack Compose için
@@ -205,11 +204,11 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır - detaylar için [LICENSE]
 
 ---
 
-## 📱 Ekran Görüntüleri
+## Ekran Görüntüleri
 
 <div align="center">
 
-|                         🔐 Giriş Ekranı                          |                           📝 Kayıt Ekranı                           |                         🏠 Ana Sayfa                         |
+|                           Giriş Ekranı                           |                            Kayıt Ekranı                             |                          Ana Sayfa                           |
 |:----------------------------------------------------------------:|:-------------------------------------------------------------------:|:------------------------------------------------------------:|
 | <img src="screenshot/Login.png" width="250" alt="Giriş Ekranı"/> | <img src="screenshot/Register.png" width="250" alt="Kayıt Ekranı"/> | <img src="screenshot/Home.png" width="250" alt="Ana Sayfa"/> |
 
@@ -219,7 +218,7 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır - detaylar için [LICENSE]
 
 <div align="center">
 
-**⭐ Eğer bu repository faydalı bulduysanız yıldızlayın!**
+**Eğer bu repository faydalı bulduysanız yıldızlayın!**
 
 [![GitHub stars](https://img.shields.io/github/stars/oguzhanozgokce/BootMobileSecure.svg?style=social&label=Star)](https://github.com/oguzhanozgokce/BootMobileSecure)
 
