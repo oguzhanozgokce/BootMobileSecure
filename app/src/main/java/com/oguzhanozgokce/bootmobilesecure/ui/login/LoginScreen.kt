@@ -1,5 +1,8 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.login
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
@@ -22,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,13 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oguzhanozgokce.bootmobilesecure.common.collectWithLifecycle
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMBaseScreen
-import com.oguzhanozgokce.bootmobilesecure.ui.components.BMEmailField
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMFacebookButton
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMFormCard
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMGoogleButton
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMLoginDivider
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMPasswordField
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMPrimaryButton
+import com.oguzhanozgokce.bootmobilesecure.ui.components.BMTextField
 import com.oguzhanozgokce.bootmobilesecure.ui.login.LoginContract.UiAction
 import com.oguzhanozgokce.bootmobilesecure.ui.login.LoginContract.UiEffect
 import com.oguzhanozgokce.bootmobilesecure.ui.login.LoginContract.UiState
@@ -47,12 +53,24 @@ fun LoginScreen(
     uiState: UiState,
     uiEffect: Flow<UiEffect>,
     onAction: (UiAction) -> Unit,
+    onNavigateToHome: () -> Unit = {},
+    onNavigateToForgotPassword: () -> Unit = {},
+    onNavigateToRegister: () -> Unit = {},
 ) {
-    uiEffect.collectWithLifecycle {}
+   val context = LocalContext.current
+
 
     BMBaseScreen(
         isLoading = uiState.isLoading,
         uiEffect = uiEffect,
+        collectEffect = { effect ->
+            when (effect) {
+                UiEffect.NavigateToHome -> onNavigateToHome()
+                is UiEffect.ShowError -> Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                UiEffect.NavigateToForgotPassword -> onNavigateToForgotPassword()
+                UiEffect.NavigateToSignup -> onNavigateToRegister()
+            }
+        },
         containerColor = Color(0xFFE8F5E8)
     ) { paddingValues ->
         LoginContent(
@@ -69,7 +87,7 @@ fun LoginScreen(
 fun LoginContent(
     modifier: Modifier = Modifier,
     uiState: UiState,
-    onAction: (UiAction) -> Unit,
+    onAction: (UiAction) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -124,11 +142,13 @@ fun LoginContent(
             BMFormCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                BMEmailField(
-                    value = uiState.email,
-                    onValueChange = { onAction(UiAction.EmailChanged(it)) },
-                    isError = uiState.emailError != null,
-                    errorMessage = uiState.emailError,
+                BMTextField(
+                    value = uiState.username,
+                    onValueChange = { onAction(UiAction.UsernameChanged(it)) },
+                    placeholder = "Enter your username",
+                    leadingIcon = Icons.Filled.Person,
+                    isError = uiState.usernameError != null,
+                    errorMessage = uiState.usernameError,
                     modifier = Modifier.fillMaxWidth()
                 )
 

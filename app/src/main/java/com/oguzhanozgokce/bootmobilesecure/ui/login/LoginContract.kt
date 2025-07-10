@@ -3,15 +3,15 @@ package com.oguzhanozgokce.bootmobilesecure.ui.login
 object LoginContract {
     data class UiState(
         val isLoading: Boolean = false,
-        val email: String = "",
+        val username: String = "",
         val password: String = "",
         val rememberMe: Boolean = false,
-        val emailError: String? = null,
+        val usernameError: String? = null,
         val passwordError: String? = null,
     )
 
     sealed interface UiAction {
-        data class EmailChanged(val email: String) : UiAction
+        data class UsernameChanged(val username: String) : UiAction
         data class PasswordChanged(val password: String) : UiAction
         data class RememberMeChanged(val rememberMe: Boolean) : UiAction
         object LoginClicked : UiAction
