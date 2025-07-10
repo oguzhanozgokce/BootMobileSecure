@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.plugin)
+    alias(libs.plugins.detekt.plugin)
     alias(libs.plugins.kotlinx.serialization.plugin)
 }
 
@@ -88,7 +89,17 @@ dependencies {
 
     implementation(libs.security.crypto)
 
+    // okhttp3
+    implementation(libs.okhttp)
 
-    // Coil
-    implementation(libs.coil.compose)
+    // Detekt
+    detektPlugins(libs.detekt.formatting)
+}
+
+detekt {
+    config.setFrom(file("$rootDir/detekt/detektConfig.yml"))
+    source.from(files("src/main/kotlin"))
+    parallel = true
+    autoCorrect = true
+    buildUponDefaultConfig = true
 }
