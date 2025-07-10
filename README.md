@@ -2,8 +2,8 @@
 
 **A modern, secure Android application built with Spring Boot backend integration**
 
-![Android](https://img.shields.io/badge/Android-API%2024+-green.svg)
-![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-blue.svg)
+![Android](https://img.shields.io/badge/Android-API%2027+-green.svg)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Compatible-brightgreen.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -59,22 +59,22 @@ practices with enterprise-grade security features. Built with **Kotlin**, **Jetp
 ### 🛡️ Multi-Layer Security
 
 1. **Hardware Security Module (HSM)**
-    - Android Keystore with StrongBox support
-    - Hardware-backed encryption keys
-    - Tamper-resistant storage
+   - Android Keystore with StrongBox support
+   - Hardware-backed encryption keys
+   - Tamper-resistant storage
 
 2. **EncryptedSharedPreferences**
-    - AES-256 encryption for sensitive data
-    - Automatic key rotation
-    - Fallback mechanisms
+   - AES-256 encryption for sensitive data
+   - Automatic key rotation
+   - Fallback mechanisms
 
 3. **Network Security**
-    - Certificate pinning
-    - Request/Response encryption
-    - Automatic token refresh
+   - Certificate pinning
+   - Request/Response encryption
+   - Automatic token refresh
 
 ```kotlin
-// Example: Secure token storage
+// Secure token storage
 tokenManager.saveTokensWithKeystore(
     accessToken = "jwt_token",
     refreshToken = "refresh_token",
@@ -89,8 +89,8 @@ tokenManager.saveTokensWithKeystore(
 ### Prerequisites
 
 - **Android Studio**: Hedgehog or newer
-- **Minimum SDK**: API 27 (Android 7.0)
-- **Target SDK**: API 35 (Android 14)
+- **Minimum SDK**: API 27 (Android 8.1)
+- **Target SDK**: API 35 (Android 15)
 - **Kotlin**: 2.0.0+
 
 ### 🔧 Installation
@@ -121,160 +121,6 @@ tokenManager.saveTokensWithKeystore(
 
 ---
 
-## 🎨 UI Components
-
-### 🎯 Reusable Components
-
-```kotlin
-// Modern TextField with encryption-ready design
-BMTextField(
-    value = email,
-    onValueChange = { email = it },
-    placeholder = "Enter your email",
-    leadingIcon = Icons.Default.Email,
-    keyboardType = KeyboardType.Email
-)
-
-// Secure Button with loading states
-BMPrimaryButton(
-    text = "Login",
-    onClick = { /* Handle click */ },
-    isLoading = isLoading
-)
-
-// Professional Card layouts
-BMFormCard {
-    // Your form content
-}
-```
-
-### 🎨 Design System
-
-- **Colors**: Spring Boot green theme (`#6DB33F`)
-- **Typography**: Material Design 3 type scale
-- **Spacing**: 8dp grid system
-- **Animations**: Smooth fade and slide transitions
-
----
-
-## 🌐 Network Layer
-
-### 📡 Safe API Calls
-
-```kotlin
-// Professional error handling
-suspend fun login(request: LoginRequest): Result<AuthResponse> {
-    return safeCall {
-        authService.login(request)
-    }.onSuccess { response ->
-        tokenManager.saveAuthResponse(response.token, response.tokenType)
-    }
-}
-```
-
-### 🔄 Error Handling
-
-| Error Type | Description | User Action |
-|------------|-------------|-------------|
-| `AuthException` | Authentication failed | Re-login required |
-| `NetworkException` | Connection issues | Check internet |
-| `ServerException` | Backend problems | Try again later |
-| `ValidationException` | Input validation | Fix input data |
-
----
-
-## 🧪 Testing
-
-### 🔬 Test Structure
-
-```bash
-src/test/                    # Unit tests
-├── repositories/           # Repository tests
-├── viewmodels/            # ViewModel tests
-└── network/               # Network layer tests
-
-src/androidTest/            # Integration tests
-├── ui/                    # UI tests
-└── database/              # Database tests
-```
-
-### 🏃‍♂️ Running Tests
-
-```bash
-# Unit tests
-./gradlew test
-
-# UI tests
-./gradlew connectedAndroidTest
-
-# All tests
-./gradlew check
-```
-
----
-
-## 📦 Dependencies
-
-### 🔧 Core Libraries
-
-```kotlin
-// UI & Architecture
-implementation("androidx.compose.ui:ui:$compose_version")
-implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
-implementation("com.google.dagger:hilt-android:$hilt_version")
-
-// Network & Security
-implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
-implementation("androidx.security:security-crypto:$security_version")
-
-// Coroutines
-implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
-```
-
----
-
-## 🔧 Configuration
-
-### 🌐 Backend Integration
-
-#### Spring Boot Endpoints
-
-```kotlin
-interface AuthService {
-    @POST("auth/login")
-    suspend fun login(@Body request: LoginRequest): Response<ApiResponse<AuthResponse>>
-    
-    @POST("auth/register") 
-    suspend fun register(@Body request: RegisterRequest): Response<ApiResponse<AuthResponse>>
-    
-    @POST("auth/refresh")
-    suspend fun refreshToken(): Response<ApiResponse<AuthResponse>>
-}
-```
-
-#### Expected API Response Format
-
-```json
-{
-  "success": true,
-  "message": "Login successful",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "tokenType": "Bearer",
-    "user": {
-      "id": 1,
-      "username": "oguzhan33",
-      "email": "oguzhan33@gmail.com",
-      "firstName": "Oğuzhan",
-      "lastName": "Özgökçe",
-      "role": "USER"
-    }
-  }
-}
-```
-
----
-
 ## 🎯 Usage Examples
 
 ### 🔐 Authentication Flow
@@ -290,11 +136,9 @@ class LoginViewModel @Inject constructor(
             
             repository.login(request).fold(
                 onSuccess = { authResponse ->
-                    // Navigate to home screen
                     emitUiEffect(UiEffect.NavigateToHome)
                 },
                 onFailure = { exception ->
-                    // Handle error
                     val message = exception.getUserMessage()
                     updateUiState { copy(errorMessage = message) }
                 }
@@ -377,7 +221,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 👨‍💻 Author
 
 **Oğuzhan Özgökçe**
-
 - GitHub: [@oguzhanozgokce](https://github.com/oguzhanozgokce)
 - Email: oguzhan33@gmail.com
 
@@ -397,7 +240,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <div align="center">
 
 ### 🔐 Login Screen
-
 <img src="screenshots/login.png" width="250" alt="Login Screen"/>
 
 ### 📝 Register Screen
@@ -405,23 +247,13 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <img src="screenshots/register.png" width="250" alt="Register Screen"/>
 
 ### 🏠 Home Screen
-
 <img src="screenshots/home.png" width="250" alt="Home Screen"/>
 
 </div>
 
 ---
 
-## 🔮 Roadmap
 
-- [ ] **Biometric Authentication** (Fingerprint/Face ID)
-- [ ] **Dark Theme** support
-- [ ] **Multi-language** support
-- [ ] **Offline Mode** with local caching
-- [ ] **Push Notifications** integration
-- [ ] **Analytics** and crash reporting
-
----
 
 <div align="center">
 
