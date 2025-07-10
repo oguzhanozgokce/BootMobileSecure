@@ -209,17 +209,9 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır - detaylar için [LICENSE]
 
 <div align="center">
 
-### 🔐 Giriş Ekranı
-
-<img src="screenshot/Login.png" width="250" alt="Giriş Ekranı"/>
-
-### 📝 Kayıt Ekranı
-
-<img src="screenshot/Register.png" width="250" alt="Kayıt Ekranı"/>
-
-### 🏠 Ana Sayfa
-
-<img src="screenshot/Home.png" width="250" alt="Ana Sayfa"/>
+|                         🔐 Giriş Ekranı                          |                           📝 Kayıt Ekranı                           |                         🏠 Ana Sayfa                         |
+|:----------------------------------------------------------------:|:-------------------------------------------------------------------:|:------------------------------------------------------------:|
+| <img src="screenshot/Login.png" width="250" alt="Giriş Ekranı"/> | <img src="screenshot/Register.png" width="250" alt="Kayıt Ekranı"/> | <img src="screenshot/Home.png" width="250" alt="Ana Sayfa"/> |
 
 </div>
 

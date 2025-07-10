@@ -135,36 +135,13 @@ tokenManager.saveTokensWithKeystore(
 4. **Run the application**
    ```bash
    # Select device/emulator and click Run
-   # Or use: ./gradlew installDebug
    ```
 
 ---
 
-## 🚀 Deployment
+## Contributing
 
-### 📱 Release Build
-
-```bash
-# Generate signed APK
-./gradlew assembleRelease
-
-# Generate App Bundle (recommended)
-./gradlew bundleRelease
-```
-
-### 🔐 Security Checklist
-
-- [ ] ProGuard/R8 enabled
-- [ ] Certificate pinning configured
-- [ ] Debug logs removed
-- [ ] API keys secured
-- [ ] Hardware security validated
-
----
-
-## 🤝 Contributing
-
-### 📝 Guidelines
+### Guidelines
 
 1. **Fork** the repository
 2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -172,7 +149,7 @@ tokenManager.saveTokensWithKeystore(
 4. **Push** to the branch (`git push origin feature/AmazingFeature`)
 5. **Open** a Pull Request
 
-### 📋 Code Standards
+### Code Standards
 
 - **Kotlin coding conventions**
 - **Material Design 3 guidelines**
@@ -181,17 +158,11 @@ tokenManager.saveTokensWithKeystore(
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 👨‍💻 Author
 
 **Oğuzhan Özgökçe**
 - GitHub: [@oguzhanozgokce](https://github.com/oguzhanozgokce)
-- Email: oguzhan33@gmail.com
+- Email: ozgokceoguzhan34@gmail.com
 
 ---
 
@@ -208,17 +179,9 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
 
-### 🔐 Login Screen
-
-<img src="screenshot/Login.png" width="250" alt="Login Screen"/>
-
-### 📝 Register Screen
-
-<img src="screenshot/Register.png" width="250" alt="Register Screen"/>
-
-### 🏠 Home Screen
-
-<img src="screenshot/Home.png" width="250" alt="Home Screen"/>
+|                         🔐 Login Screen                          |                           📝 Register Screen                           |                         🏠 Home Screen                         |
+|:----------------------------------------------------------------:|:----------------------------------------------------------------------:|:--------------------------------------------------------------:|
+| <img src="screenshot/Login.png" width="250" alt="Login Screen"/> | <img src="screenshot/Register.png" width="250" alt="Register Screen"/> | <img src="screenshot/Home.png" width="250" alt="Home Screen"/> |
 
 </div>
 
