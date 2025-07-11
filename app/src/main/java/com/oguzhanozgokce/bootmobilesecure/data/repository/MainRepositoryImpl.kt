@@ -6,6 +6,7 @@ import com.oguzhanozgokce.bootmobilesecure.data.model.RegisterRequest
 import com.oguzhanozgokce.bootmobilesecure.data.model.toUiUser
 import com.oguzhanozgokce.bootmobilesecure.data.network.AuthException
 import com.oguzhanozgokce.bootmobilesecure.data.network.TokenManager
+import com.oguzhanozgokce.bootmobilesecure.data.network.getUserMessage
 import com.oguzhanozgokce.bootmobilesecure.data.network.safeCall
 import com.oguzhanozgokce.bootmobilesecure.data.source.remote.AuthService
 import com.oguzhanozgokce.bootmobilesecure.data.source.remote.UserService
