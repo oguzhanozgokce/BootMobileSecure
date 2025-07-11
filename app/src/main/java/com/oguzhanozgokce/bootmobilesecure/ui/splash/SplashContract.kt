@@ -5,8 +5,7 @@ object SplashContract {
         val isLoading: Boolean = true,
     )
 
-    sealed interface UiAction {
-    }
+    sealed interface UiAction
 
     sealed interface UiEffect {
         object NavigateToHome : UiEffect

@@ -4,6 +4,7 @@ import com.oguzhanozgokce.bootmobilesecure.data.model.AuthResponse
 import com.oguzhanozgokce.bootmobilesecure.data.model.LoginRequest
 import com.oguzhanozgokce.bootmobilesecure.data.model.RegisterRequest
 import com.oguzhanozgokce.bootmobilesecure.domain.model.User
+import java.io.File
 
 interface MainRepository {
     // Auth functions
@@ -15,4 +16,5 @@ interface MainRepository {
     suspend fun getCurrentUser(): Result<User>
     suspend fun getUserById(id: Long): Result<User>
     suspend fun deleteUser(id: Long): Result<String>
+    suspend fun updateProfileImage(imageFile: File): Result<User>
 }

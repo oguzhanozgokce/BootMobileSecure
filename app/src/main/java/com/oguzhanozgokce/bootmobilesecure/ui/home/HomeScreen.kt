@@ -1,7 +1,12 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.home
 
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,17 +26,22 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,9 +50,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.oguzhanozgokce.bootmobilesecure.common.collectWithLifecycle
+import coil.compose.AsyncImage
 import com.oguzhanozgokce.bootmobilesecure.domain.model.User
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMBaseScreen
+import com.oguzhanozgokce.bootmobilesecure.ui.components.ImagePickerPermissionHandler
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.QuickAction
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiAction
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiEffect
@@ -60,6 +71,26 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
 
+    // Gallery launcher
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { onAction(UiAction.ImageSelected(it)) }
+    }
+
+    // Permission handlers using the new centralized system
+    val imagePickerPermissions = ImagePickerPermissionHandler(
+        onGalleryReady = {
+            galleryLauncher.launch("image/*")
+        },
+        onCameraReady = {
+            Toast.makeText(context, "Camera feature coming soon", Toast.LENGTH_SHORT).show()
+        },
+        onPermissionDenied = { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    )
+
     BMBaseScreen(
         isLoading = uiState.isLoading,
         uiEffect = uiEffect,
@@ -73,18 +104,106 @@ fun HomeScreen(
                     effect.message,
                     Toast.LENGTH_SHORT
                 ).show()
-                is UiEffect.ShowSuccess -> {}
+
+                is UiEffect.ShowSuccess -> Toast.makeText(
+                    context,
+                    effect.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         },
         containerColor = Color(0xFFF5F5F5)
     ) {
         HomeContent(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             uiState = uiState,
             onAction = onAction,
         )
+
+        if (uiState.showImagePickerDialog) {
+            ImagePickerDialog(
+                onDismiss = { onAction(UiAction.DismissImagePickerDialog) },
+                onGalleryClick = {
+                    onAction(UiAction.DismissImagePickerDialog)
+                    imagePickerPermissions.requestGalleryPermission()
+                },
+                onCameraClick = {
+                    onAction(UiAction.DismissImagePickerDialog)
+                    imagePickerPermissions.requestCameraPermission()
+                }
+            )
+        }
     }
+}
+
+@Composable
+fun ImagePickerDialog(
+    onDismiss: () -> Unit,
+    onGalleryClick: () -> Unit,
+    onCameraClick: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Select Image",
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                Text("Choose how you want to select your profile image:")
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onGalleryClick() },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF6DB33F).copy(alpha = 0.1f)
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("📷", fontSize = 32.sp)
+                            Text("Gallery", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onCameraClick() },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF6DB33F).copy(alpha = 0.1f)
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("📸", fontSize = 32.sp)
+                            Text("Camera", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 @Composable
@@ -114,7 +233,8 @@ fun HomeContent(
             // Welcome Card
             WelcomeCard(
                 user = uiState.user,
-                onAction = onAction
+                onAction = onAction,
+                isUploadingImage = uiState.isUploadingImage
             )
         }
 
@@ -172,7 +292,8 @@ fun HeaderSection(
 @Composable
 fun WelcomeCard(
     user: User?,
-    onAction: (UiAction) -> Unit
+    onAction: (UiAction) -> Unit,
+    isUploadingImage: Boolean = false
 ) {
     Card(
         modifier = Modifier
@@ -190,20 +311,85 @@ fun WelcomeCard(
                 .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar
+            // Avatar with click functionality and loading state
             Box(
                 modifier = Modifier
                     .size(60.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.2f)),
+                    .clickable { onAction(UiAction.AvatarClicked) },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Avatar",
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
-                )
+                if (user?.profileImageUrl != null) {
+                    AsyncImage(
+                        model = user.profileImageUrl,
+                        contentDescription = "Profile Image",
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, Color.White.copy(alpha = 0.3f), CircleShape),
+                        contentScale = ContentScale.Crop,
+                        onSuccess = {
+                            Log.d("AsyncImage", " Image loaded successfully: ${user.profileImageUrl}")
+                        },
+                        onError = { state ->
+                            Log.e(
+                                "AsyncImage",
+                                " Failed to load image: ${user.profileImageUrl}, Error: ${state.result.throwable}"
+                            )
+                        },
+                        onLoading = {
+                            Log.d("AsyncImage", " Loading image: ${user.profileImageUrl}")
+                        }
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Default Avatar",
+                            tint = Color.White,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                }
+
+                if (isUploadingImage) {
+                    Box(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    }
+                } else {
+                    // Add icon overlay
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                            .align(Alignment.BottomEnd),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Change Photo",
+                            tint = Color(0xFF6DB33F),
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.width(16.dp))

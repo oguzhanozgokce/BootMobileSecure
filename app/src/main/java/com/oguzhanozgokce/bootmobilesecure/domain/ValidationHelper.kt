@@ -1,7 +1,7 @@
 package com.oguzhanozgokce.bootmobilesecure.domain
 
 object ValidationHelper {
-    
+
     data class RegisterValidationResult(
         val usernameError: String? = null,
         val emailError: String? = null,
@@ -9,8 +9,8 @@ object ValidationHelper {
         val firstNameError: String? = null,
         val lastNameError: String? = null
     ) {
-        fun hasErrors() = usernameError != null || emailError != null || 
-                          passwordError != null || firstNameError != null || lastNameError != null
+        fun hasErrors() = usernameError != null || emailError != null ||
+                passwordError != null || firstNameError != null || lastNameError != null
     }
 
     data class LoginWithUsernameValidationResult(

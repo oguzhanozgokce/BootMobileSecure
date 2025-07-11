@@ -1,5 +1,6 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.home
 
+import android.net.Uri
 import com.oguzhanozgokce.bootmobilesecure.domain.model.User
 
 object HomeContract {
@@ -8,6 +9,8 @@ object HomeContract {
         val user: User? = null,
         val greeting: String = "",
         val quickActions: List<QuickAction> = emptyList(),
+        val isUploadingImage: Boolean = false,
+        val showImagePickerDialog: Boolean = false,
     )
 
     data class QuickAction(
@@ -24,7 +27,10 @@ object HomeContract {
         object LogoutClicked : UiAction
         object ProfileClicked : UiAction
         object SettingsClicked : UiAction
+        object AvatarClicked : UiAction
+        object DismissImagePickerDialog : UiAction
         data class QuickActionClicked(val actionId: String) : UiAction
+        data class ImageSelected(val uri: Uri) : UiAction
     }
 
     sealed interface UiEffect {

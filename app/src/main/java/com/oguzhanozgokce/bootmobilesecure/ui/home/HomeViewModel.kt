@@ -1,7 +1,11 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.home
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oguzhanozgokce.bootmobilesecure.common.ImageUtils
 import com.oguzhanozgokce.bootmobilesecure.data.network.TokenManager
 import com.oguzhanozgokce.bootmobilesecure.data.network.getUserMessage
 import com.oguzhanozgokce.bootmobilesecure.delegation.MVI
@@ -12,6 +16,7 @@ import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiAction
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiEffect
 import com.oguzhanozgokce.bootmobilesecure.ui.home.HomeContract.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
@@ -19,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel(), MVI<UiState, UiAction, UiEffect> by mvi(UiState()) {
 
     init {
@@ -36,17 +42,21 @@ class HomeViewModel @Inject constructor(
                 UiAction.LogoutClicked -> handleLogout()
                 UiAction.ProfileClicked -> emitUiEffect(UiEffect.NavigateToProfile)
                 UiAction.SettingsClicked -> emitUiEffect(UiEffect.NavigateToSettings)
+                UiAction.AvatarClicked -> handleAvatarClicked()
+                UiAction.DismissImagePickerDialog -> updateUiState { copy(showImagePickerDialog = false) }
                 is UiAction.QuickActionClicked -> handleQuickAction(uiAction.actionId)
+                is UiAction.ImageSelected -> handleImageSelected(uiAction.uri)
             }
         }
     }
 
-    private  fun loadUserData(isRefresh: Boolean = false) = viewModelScope.launch {
+    private fun loadUserData(isRefresh: Boolean = false) = viewModelScope.launch {
         updateUiState { copy(isLoading = true) }
 
         mainRepository.getCurrentUser()
             .onSuccess { user ->
                 updateUiState { copy(user = user, isLoading = false) }
+                Log.d("HomeViewModel", "User data loaded successfully: $user")
                 if (isRefresh) {
                     emitUiEffect(UiEffect.ShowSuccess("Profile refreshed successfully"))
                 }
@@ -139,6 +149,67 @@ class HomeViewModel @Inject constructor(
             "refresh" -> onAction(UiAction.RefreshUserData)
             "help" -> emitUiEffect(UiEffect.ShowSuccess("Help center opened"))
             else -> emitUiEffect(UiEffect.ShowError("Unknown action"))
+        }
+    }
+
+    private fun handleAvatarClicked() {
+        updateUiState { copy(showImagePickerDialog = true) }
+    }
+
+    private fun handleImageSelected(uri: Uri) = viewModelScope.launch {
+        updateUiState { copy(isUploadingImage = true) }
+
+        try {
+            val tempFile = ImageUtils.createTempFileFromUri(context, uri)
+            if (tempFile == null) {
+                updateUiState { copy(isUploadingImage = false) }
+                emitUiEffect(UiEffect.ShowError("Failed to process image"))
+                return@launch
+            }
+
+            if (!ImageUtils.isValidImageFile(tempFile)) {
+                updateUiState { copy(isUploadingImage = false) }
+                emitUiEffect(UiEffect.ShowError("Invalid image file. Please select a valid image."))
+                ImageUtils.cleanupTempFile(tempFile)
+                return@launch
+            }
+
+            val processedFile = ImageUtils.compressImageIfNeeded(tempFile, 5 * 1024 * 1024) // 5MB limit
+            if (processedFile == null) {
+                updateUiState { copy(isUploadingImage = false) }
+                emitUiEffect(UiEffect.ShowError("Failed to process image"))
+                ImageUtils.cleanupTempFile(tempFile)
+                return@launch
+            }
+
+            mainRepository.updateProfileImage(processedFile)
+                .onSuccess { updatedUser ->
+                    updateUiState {
+                        copy(
+                            user = updatedUser,
+                            isUploadingImage = false
+                        )
+                    }
+                    emitUiEffect(UiEffect.ShowSuccess("Profile image updated successfully"))
+                }
+                .onFailure { exception ->
+                    updateUiState { copy(isUploadingImage = false) }
+                    val errorMessage = exception.getUserMessage()
+                    emitUiEffect(UiEffect.ShowError("Failed to upload image: $errorMessage"))
+
+                    if (!tokenManager.isLoggedIn() || errorMessage.contains("401")) {
+                        emitUiEffect(UiEffect.NavigateToLogin)
+                    }
+                }
+
+            ImageUtils.cleanupTempFile(tempFile)
+            if (processedFile != tempFile) {
+                ImageUtils.cleanupTempFile(processedFile)
+            }
+
+        } catch (e: Exception) {
+            updateUiState { copy(isUploadingImage = false) }
+            emitUiEffect(UiEffect.ShowError("Error uploading image: ${e.message}"))
         }
     }
 }

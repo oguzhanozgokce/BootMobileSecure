@@ -92,6 +92,9 @@ dependencies {
     // okhttp3
     implementation(libs.okhttp)
 
+    // Coil for image loading
+    implementation(libs.coil.compose)
+
     // Detekt
     detektPlugins(libs.detekt.formatting)
 }

@@ -1,8 +1,6 @@
 package com.oguzhanozgokce.bootmobilesecure.ui.login
 
-import android.app.Activity
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.oguzhanozgokce.bootmobilesecure.common.collectWithLifecycle
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMBaseScreen
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMFacebookButton
 import com.oguzhanozgokce.bootmobilesecure.ui.components.BMFormCard
@@ -57,7 +54,7 @@ fun LoginScreen(
     onNavigateToForgotPassword: () -> Unit = {},
     onNavigateToRegister: () -> Unit = {},
 ) {
-   val context = LocalContext.current
+    val context = LocalContext.current
 
 
     BMBaseScreen(
